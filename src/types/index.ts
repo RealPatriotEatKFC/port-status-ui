@@ -1,5 +1,5 @@
 // 포트 상태 타입
-export type PortStatus = '정상' | '미사용' | '점검필요';
+export type PortStatus = '정상' | '미사용' | '점검필요' | '미지정';
 
 // 포트 정보
 export interface Port {

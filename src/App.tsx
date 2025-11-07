@@ -11,10 +11,12 @@ import { useState, useEffect } from 'react';
 import EquipmentList from './components/EquipmentList';
 import PortGrid from './components/PortGrid';
 import { usePortStore } from './store/usePortStore';
+import { useTranslation } from './hooks/useTranslation';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { isDarkMode, toggleDarkMode } = usePortStore();
+  const { isDarkMode, toggleDarkMode, language, setLanguage } = usePortStore();
+  const t = useTranslation();
 
   // 초기 로드 시 다크 모드 적용
   useEffect(() => {
@@ -46,7 +48,7 @@ function App() {
           p-2 shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300
           ${isSidebarOpen ? 'left-[320px]' : 'left-0'}
         `}
-        title={isSidebarOpen ? '사이드바 숨기기' : '사이드바 보이기'}
+        title={isSidebarOpen ? t.sidebar.hide : t.sidebar.show}
       >
         {isSidebarOpen ? (
           // << 아이콘 (숨기기)
@@ -75,11 +77,20 @@ function App() {
         )}
       </button>
 
+      {/* 언어 변경 버튼 */}
+      <button
+        onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+        className="absolute top-4 right-20 z-30 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 text-sm font-medium"
+        title={language === 'ko' ? 'Switch to English' : '한국어로 전환'}
+      >
+        {language === 'ko' ? 'EN' : '한'}
+      </button>
+
       {/* 다크 모드 토글 버튼 */}
       <button
         onClick={toggleDarkMode}
         className="absolute top-4 right-4 z-30 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md p-2 shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
-        title={isDarkMode ? '라이트 모드로 전환' : '다크 모드로 전환'}
+        title={isDarkMode ? t.darkMode.toggleLight : t.darkMode.toggle}
       >
         {isDarkMode ? (
           // 태양 아이콘 (라이트 모드로 전환)

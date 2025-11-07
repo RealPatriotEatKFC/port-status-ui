@@ -12,6 +12,7 @@ export default {
         'port-normal': '#10b981',      // 정상 - 초록색
         'port-unused': '#6b7280',      // 미사용 - 회색
         'port-check': '#f59e0b',       // 점검필요 - 주황색
+        'port-unspecified': '#8b5cf6', // 미지정 - 보라색
       },
     },
   },

@@ -13,6 +13,7 @@
 import { useState, useEffect } from 'react';
 import { usePortStore } from '../store/usePortStore';
 import type { Equipment } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AddEquipmentModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ interface AddEquipmentModalProps {
 
 export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }: AddEquipmentModalProps) {
   const { addEquipment, updateEquipment } = usePortStore();
+  const t = useTranslation();
   const isEditMode = !!editingEquipment;
   
   // 폼 상태
@@ -65,12 +67,12 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
     
     // 유효성 검사
     if (!name.trim()) {
-      alert('장비 이름을 입력해주세요.');
+      alert(t.equipment.nameRequired);
       return;
     }
     
     if (rows < 1 || cols < 1) {
-      alert('행과 열은 1 이상이어야 합니다.');
+      alert(t.equipment.rowsRequired);
       return;
     }
 
@@ -113,7 +115,7 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
         {/* 헤더 */}
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            {isEditMode ? '장비 수정' : '새 장비 추가'}
+            {isEditMode ? t.equipment.edit : t.equipment.addNew}
           </h2>
         </div>
 
@@ -122,14 +124,14 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
           {/* 장비 이름 */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              장비 이름 <span className="text-red-500">*</span>
+              {t.equipment.name} <span className="text-red-500">*</span>
             </label>
             <input
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="예: 스위치-01"
+              placeholder={t.equipment.namePlaceholder}
               required
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               autoFocus
@@ -138,39 +140,39 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
 
           {/* 위치 */}
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-              위치
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {t.common.location}
             </label>
             <input
               id="location"
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="예: 서버실 A랙"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={t.equipment.locationPlaceholder}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* 타입 */}
           <div>
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-              타입
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {t.common.type}
             </label>
             <input
               id="type"
               type="text"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              placeholder="예: 스위치, 라우터"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={t.equipment.typePlaceholder}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* 포트 레이아웃 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="rows" className="block text-sm font-medium text-gray-700 mb-1">
-                행 개수 <span className="text-red-500">*</span>
+              <label htmlFor="rows" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t.equipment.rows} <span className="text-red-500">*</span>
               </label>
               <input
                 id="rows"
@@ -180,12 +182,12 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
                 value={rows}
                 onChange={(e) => setRows(parseInt(e.target.value) || 1)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label htmlFor="cols" className="block text-sm font-medium text-gray-700 mb-1">
-                열 개수 <span className="text-red-500">*</span>
+              <label htmlFor="cols" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t.equipment.cols} <span className="text-red-500">*</span>
               </label>
               <input
                 id="cols"
@@ -195,7 +197,7 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
                 value={cols}
                 onChange={(e) => setCols(parseInt(e.target.value) || 1)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -205,16 +207,16 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
             <p className="text-sm text-gray-600 dark:text-gray-300">
               {isEditMode ? (
                 <>
-                  총 <span className="font-semibold text-gray-900 dark:text-gray-100">{rows * cols}개</span>의 포트가 됩니다.
+                  {t.common.total} <span className="font-semibold text-gray-900 dark:text-gray-100">{rows * cols}</span> {t.equipment.portCountEdit}
                   {editingEquipment && rows * cols < editingEquipment.ports.length && (
                     <span className="block mt-1 text-xs text-amber-600 dark:text-amber-400">
-                      ⚠️ 레이아웃이 줄어들면 일부 포트 정보가 삭제될 수 있습니다.
+                      {t.equipment.layoutWarning}
                     </span>
                   )}
                 </>
               ) : (
                 <>
-                  총 <span className="font-semibold text-gray-900 dark:text-gray-100">{rows * cols}개</span>의 포트가 생성됩니다.
+                  {t.common.total} <span className="font-semibold text-gray-900 dark:text-gray-100">{rows * cols}</span> {t.equipment.portCount}
                 </>
               )}
             </p>
@@ -225,15 +227,15 @@ export default function AddEquipmentModal({ isOpen, onClose, editingEquipment }:
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              취소
+              {t.common.cancel}
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium"
             >
-              {isEditMode ? '수정' : '추가'}
+              {isEditMode ? t.common.edit : t.common.add}
             </button>
           </div>
         </form>

@@ -10,6 +10,7 @@
 import { useState, useEffect } from 'react';
 import { usePortStore } from '../store/usePortStore';
 import type { Port, PortStatus } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface PortModalProps {
   isOpen: boolean;
@@ -20,10 +21,11 @@ interface PortModalProps {
 
 export default function PortModal({ isOpen, onClose, equipmentId, port }: PortModalProps) {
   const { updatePortName, updatePortStatus, updatePortNote } = usePortStore();
+  const t = useTranslation();
   
   // 로컬 상태 (포트 정보를 복사해서 관리)
   const [name, setName] = useState('');
-  const [status, setStatus] = useState<PortStatus>('미사용');
+  const [status, setStatus] = useState<PortStatus>('미지정');
   const [note, setNote] = useState('');
 
   // 포트 정보가 변경되면 로컬 상태 업데이트
@@ -58,6 +60,8 @@ export default function PortModal({ isOpen, onClose, equipmentId, port }: PortMo
         return 'bg-port-unused text-white';
       case '점검필요':
         return 'bg-port-check text-white';
+      case '미지정':
+        return 'bg-port-unspecified text-white';
       default:
         return 'bg-gray-500 text-white';
     }
@@ -76,9 +80,9 @@ export default function PortModal({ isOpen, onClose, equipmentId, port }: PortMo
       >
         {/* 헤더 */}
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">포트 정보</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t.port.title}</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            위치: {port.row + 1}행 {port.col + 1}열
+            {t.port.position}: {port.row + 1}{t.common.rows} {port.col + 1}{t.common.cols}
           </p>
         </div>
 
@@ -87,14 +91,14 @@ export default function PortModal({ isOpen, onClose, equipmentId, port }: PortMo
           {/* 포트 이름 */}
           <div>
             <label htmlFor="port-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              포트 이름
+              {t.common.port} {t.common.name}
             </label>
             <input
               id="port-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="예: Gi1/0/1"
+              placeholder={t.port.namePlaceholder}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -102,41 +106,47 @@ export default function PortModal({ isOpen, onClose, equipmentId, port }: PortMo
           {/* 포트 상태 */}
           <div>
             <label htmlFor="port-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              상태
+              {t.common.status}
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              {(['정상', '미사용', '점검필요'] as PortStatus[]).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setStatus(s)}
-                  className={`
-                    px-4 py-2 rounded-md font-medium transition-all
-                    ${
-                      status === s
-                        ? getStatusColorClass(s) + ' ring-2 ring-offset-2 ring-blue-500'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="grid grid-cols-4 gap-2">
+              {(['정상', '미사용', '점검필요', '미지정'] as PortStatus[]).map((s) => {
+                const statusText = s === '정상' ? t.portStatus.normal :
+                                  s === '미사용' ? t.portStatus.unused :
+                                  s === '점검필요' ? t.portStatus.check :
+                                  t.portStatus.unspecified;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setStatus(s)}
+                    className={`
+                      px-4 py-2 rounded-md font-medium transition-all
+                      ${
+                        status === s
+                          ? getStatusColorClass(s) + ' ring-2 ring-offset-2 ring-blue-500'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }
+                    `}
+                  >
+                    {statusText}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* 메모 */}
           <div>
-            <label htmlFor="port-note" className="block text-sm font-medium text-gray-700 mb-1">
-              메모
+            <label htmlFor="port-note" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {t.common.note}
             </label>
             <textarea
               id="port-note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="추가 정보를 입력하세요..."
+              placeholder="..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
           </div>
 
@@ -145,16 +155,16 @@ export default function PortModal({ isOpen, onClose, equipmentId, port }: PortMo
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              취소
+              {t.common.cancel}
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium"
             >
-              저장
+              {t.common.save}
             </button>
           </div>
         </div>

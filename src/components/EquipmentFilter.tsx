@@ -8,10 +8,11 @@
  */
 
 import { usePortStore } from '../store/usePortStore';
-import { useState, useEffect } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function EquipmentFilter() {
   const { filterOptions, setFilterOptions, clearFilters, getFilteredEquipments } = usePortStore();
+  const t = useTranslation();
   
   // 필터링된 장비 목록에서 고유한 위치와 타입 추출
   const filteredEquipments = getFilteredEquipments();
@@ -42,14 +43,14 @@ export default function EquipmentFilter() {
       {/* 검색 입력창 */}
       <div>
         <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          검색
+          {t.filter.search}
         </label>
         <input
           id="search"
           type="text"
           value={filterOptions.search}
           onChange={(e) => handleSearchChange(e.target.value)}
-          placeholder="장비 이름, 위치, 타입으로 검색..."
+          placeholder={t.filter.searchPlaceholder}
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
@@ -58,7 +59,7 @@ export default function EquipmentFilter() {
       {uniqueLocations.length > 0 && (
         <div>
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            위치
+            {t.filter.location}
           </label>
           <select
             id="location"
@@ -66,7 +67,7 @@ export default function EquipmentFilter() {
             onChange={(e) => handleLocationChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="">전체</option>
+            <option value="">{t.filter.all}</option>
             {uniqueLocations.map((location) => (
               <option key={location} value={location}>
                 {location}
@@ -80,7 +81,7 @@ export default function EquipmentFilter() {
       {uniqueTypes.length > 0 && (
         <div>
           <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            타입
+            {t.filter.type}
           </label>
           <select
             id="type"
@@ -88,7 +89,7 @@ export default function EquipmentFilter() {
             onChange={(e) => handleTypeChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="">전체</option>
+            <option value="">{t.filter.all}</option>
             {uniqueTypes.map((type) => (
               <option key={type} value={type}>
                 {type}
@@ -104,7 +105,7 @@ export default function EquipmentFilter() {
           onClick={clearFilters}
           className="w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
         >
-          필터 초기화
+          {t.filter.clearFilters}
         </button>
       )}
     </div>
