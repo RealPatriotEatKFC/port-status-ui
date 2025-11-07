@@ -23,7 +23,7 @@
 - **장비 삭제**: 불필요한 장비 삭제 기능
 - **장비 필터링**: 검색어, 위치, 타입으로 장비 필터링
 
-| ![사이드바](./screenshot/Sidebar.png) | ![장비추가 옵션](./screenshot/Sidebar_Configuration.png) |
+|![사이드바](./screenshot/Sidebar.png)|![장비추가 옵션](./screenshot/Sidebar_Configuration.png)|
 
 ### 2. 포트 상태 관리
 - **포트 그리드**: 선택한 장비의 포트를 그리드 형태로 시각화
