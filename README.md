@@ -23,6 +23,8 @@
 - **장비 삭제**: 불필요한 장비 삭제 기능
 - **장비 필터링**: 검색어, 위치, 타입으로 장비 필터링
 
+| ![사이드바](./screenshot/Sidebar.png) | ![장비추가 옵션](./screenshot/Sidebar_Configuration.png) |
+
 ### 2. 포트 상태 관리
 - **포트 그리드**: 선택한 장비의 포트를 그리드 형태로 시각화
 - **포트 상태 설정**: 각 포트를 클릭하여 상태 입력
@@ -32,11 +34,15 @@
 - **포트 정보 입력**: 포트 이름, 상태, 메모 입력
 - **동적 레이아웃**: 브라우저 크기에 맞춰 포트 크기 자동 조절
 
+![만들어진 레이아웃](./screenshot/Server_Check1.png)
+
 ### 3. 사용자 인터페이스
 - **사이드바 토글**: 좌측 장비 목록을 숨기기/보이기 기능
 - **반응형 디자인**: 화면 크기에 따라 자동 조절
 - **직관적인 색상 코딩**: 포트 상태를 색상으로 구분
 - **부드러운 애니메이션**: 사이드바 토글 및 상태 변경 시 애니메이션
+
+![다크모드](./screenshot/DarkMode.png)
 
 ### 4. 데이터 관리
 - **로컬 저장**: 브라우저 localStorage에 자동 저장
@@ -118,8 +124,16 @@ getFilteredEquipments: () => Equipment[]
 
 ### 설치
 
+Node.js의 공식사이트 (https://nodejs.org/) 접속
+Node.js 다운로드와 PATH 설정하고 PC를 재부팅해줍니다.
+이후 cmd나 powershell에서 
+"node -v, npm -v" 이 두 명령어 실행해서 버전이 나오면 정상 설치 완료
+
+
 ```bash
-# 의존성 설치
+# 의존성 설치, package.json이 있는 경로에서 하세요.
+# 필요한 React, TypeScript, Zustand, tailwindcss 설치
+# 문제 발생 시, tailwindcss는 3.4.17 버전으로 설치바랍니다.
 npm install
 
 # 개발 서버 실행
