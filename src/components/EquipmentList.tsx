@@ -12,6 +12,7 @@ import { usePortStore } from '../store/usePortStore';
 import EquipmentFilter from './EquipmentFilter';
 import AddEquipmentModal from './AddEquipmentModal';
 import { useState } from 'react';
+import type { Equipment } from '../types';
 
 export default function EquipmentList() {
   const { 
@@ -22,6 +23,7 @@ export default function EquipmentList() {
   } = usePortStore();
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(null);
   const filteredEquipments = getFilteredEquipments();
 
   // 장비 선택 핸들러
@@ -35,6 +37,12 @@ export default function EquipmentList() {
     if (confirm('이 장비를 삭제하시겠습니까?')) {
       deleteEquipment(equipmentId);
     }
+  };
+
+  // 장비 수정 핸들러
+  const handleEditEquipment = (e: React.MouseEvent, equipment: Equipment) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    setEditingEquipment(equipment);
   };
 
   return (
@@ -77,13 +85,22 @@ export default function EquipmentList() {
               {/* 장비 이름 */}
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100">{equipment.name}</h3>
-                <button
-                  onClick={(e) => handleDeleteEquipment(e, equipment.id)}
-                  className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm px-2 py-1"
-                  title="장비 삭제"
-                >
-                  ×
-                </button>
+                <div className="flex gap-1">
+                  <button
+                    onClick={(e) => handleEditEquipment(e, equipment)}
+                    className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm px-2 py-1"
+                    title="장비 수정"
+                  >
+                    ✎
+                  </button>
+                  <button
+                    onClick={(e) => handleDeleteEquipment(e, equipment.id)}
+                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm px-2 py-1"
+                    title="장비 삭제"
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
 
               {/* 장비 정보 */}
@@ -110,10 +127,14 @@ export default function EquipmentList() {
         )}
       </div>
 
-      {/* 장비 추가 모달 */}
+      {/* 장비 추가/수정 모달 */}
       <AddEquipmentModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        isOpen={isAddModalOpen || !!editingEquipment}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingEquipment(null);
+        }}
+        editingEquipment={editingEquipment}
       />
     </div>
   );

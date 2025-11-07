@@ -99,11 +99,57 @@ export const usePortStore = create<PortStore>()(
 
       updateEquipment: (id, updates) => {
         set((state) => ({
-          equipments: state.equipments.map((eq) =>
-            eq.id === id
-              ? { ...eq, ...updates, updatedAt: new Date().toISOString() }
-              : eq
-          ),
+          equipments: state.equipments.map((eq) => {
+            if (eq.id !== id) return eq;
+
+            // 레이아웃이 변경되는 경우 포트 정보 보존
+            if (updates.layout && (updates.layout.rows !== eq.layout.rows || updates.layout.cols !== eq.layout.cols)) {
+              const newRows = updates.layout.rows;
+              const newCols = updates.layout.cols;
+              const newTotalPorts = newRows * newCols;
+              const oldTotalPorts = eq.layout.rows * eq.layout.cols;
+
+              // 기존 포트 중 유지할 수 있는 포트들 (새 레이아웃 범위 내)
+              const preservedPorts = eq.ports.filter((port) => port.row < newRows && port.col < newCols);
+
+              // 새로운 포트 생성 (부족한 경우)
+              const newPorts: Port[] = [];
+              let portNumber = preservedPorts.length + 1;
+
+              // 기존 포트 유지
+              preservedPorts.forEach((port) => {
+                newPorts.push(port);
+              });
+
+              // 새로운 포트 추가
+              for (let row = 0; row < newRows; row++) {
+                for (let col = 0; col < newCols; col++) {
+                  // 이미 해당 위치에 포트가 있는지 확인
+                  const existingPort = preservedPorts.find((p) => p.row === row && p.col === col);
+                  if (!existingPort) {
+                    newPorts.push({
+                      id: `port-${Date.now()}-${portNumber}`,
+                      name: `포트 ${portNumber}`,
+                      status: '미사용',
+                      row,
+                      col,
+                    });
+                    portNumber++;
+                  }
+                }
+              }
+
+              return {
+                ...eq,
+                ...updates,
+                ports: newPorts,
+                updatedAt: new Date().toISOString(),
+              };
+            }
+
+            // 레이아웃 변경이 아닌 경우 일반 업데이트
+            return { ...eq, ...updates, updatedAt: new Date().toISOString() };
+          }),
         }));
       },
 
